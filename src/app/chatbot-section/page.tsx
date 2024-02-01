@@ -29,13 +29,14 @@ const ChatbotSection = () => {
 
   const handleSendMessage = useCallback(async () => {
     setIsLoading(true);
-    if (firebaseAuth.currentUser?.uid === undefined) return;
+    while(firebaseAuth.currentUser?.uid === undefined){}
     if (userContext.currentConversationId === -1) {
       const newConversationId = await handleAddConversation({
         user_id: firebaseAuth.currentUser.uid,
         date_created: new Date().toDateString(),
       });
 
+      while(newConversationId === undefined || newConversationId === -1) {};
       userContext.setCurrentConversation(newConversationId);
 
       const addedFirebaseDoc = await addDoc(collection(db, "chat-history"), {
@@ -180,7 +181,8 @@ const ChatbotSection = () => {
                 )}
               </button>
               <button
-                onClick={() => handleNewChat()}
+                onClick={() => {
+                  if(!isLoading){handleNewChat()}}}
                 className="mt-4 w-36 bg-green-500  px-4 py-2 text-white hover:bg-green-600 "
               >
                 New Chat
