@@ -24,9 +24,9 @@ const LoginPage = () => {
         return;
       }
       setIsLoading(true);
-      const user = await getSpecifiedUser(email);
+  
       await signInWithEmailAndPassword(auth, email, password);
-      if (user === undefined) return;
+    
 
       setWarning("");
       setEmail("");
