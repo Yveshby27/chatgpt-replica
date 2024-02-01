@@ -36,7 +36,6 @@ const ChatbotSection = () => {
         date_created: new Date().toDateString(),
       });
 
-      if (newConversationId === undefined || newConversationId === -1) return;
       userContext.setCurrentConversation(newConversationId);
 
       const addedFirebaseDoc = await addDoc(collection(db, "chat-history"), {
