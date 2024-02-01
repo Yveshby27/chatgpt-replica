@@ -29,14 +29,14 @@ const ChatbotSection = () => {
 
   const handleSendMessage = useCallback(async () => {
     setIsLoading(true);
-    if (firebaseAuth.currentUser?.uid === undefined) return;
+ 
     if (userContext.currentConversationId === -1) {
       const newConversationId = await handleAddConversation({
         user_id: firebaseAuth.currentUser.uid,
         date_created: new Date().toDateString(),
       });
 
-      if (newConversationId === undefined || newConversationId === -1) return;
+   
       userContext.setCurrentConversation(newConversationId);
 
       const addedFirebaseDoc = await addDoc(collection(db, "chat-history"), {
