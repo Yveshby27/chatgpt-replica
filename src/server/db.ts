@@ -2,11 +2,12 @@ import { Sequelize, DataTypes } from "sequelize";
 import pg from "pg";
 
 const sequelize = new Sequelize(
-  "postgres://postgres:password@localhost:5432/chatgpt_replica",
+`${process.env.DATABASE_URL}`,
   {
     dialectModule: pg,
   },
 );
+
 
 const testDbConnection = async () => {
   try {
@@ -104,6 +105,7 @@ export interface UserAddInfo {
 }
 export const addUser = async ({ id,email, password }: UserAddInfo) => {
   try {
+    await testDbConnection()
     await User.sync();
     const newUser = await User.create({id, email, password });
     console.log("User added:", newUser);
@@ -165,6 +167,7 @@ export const addConversation = async ({
   date_created,
 }: ConversationAddInfo) => {
   try {
+
     await Conversation.sync();
 
     const user = await User.findOne({ where: { id: user_id } });
