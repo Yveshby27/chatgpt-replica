@@ -105,7 +105,6 @@ export interface UserAddInfo {
 }
 export const addUser = async ({ id,email, password }: UserAddInfo) => {
   try {
-    await testDbConnection()
     await User.sync();
     const newUser = await User.create({id, email, password });
     console.log("User added:", newUser);
