@@ -8,6 +8,7 @@ const sequelize = new Sequelize(
   },
 );
 
+
 const testDbConnection = async () => {
   try {
     await sequelize.authenticate();
@@ -165,6 +166,7 @@ export const addConversation = async ({
   date_created,
 }: ConversationAddInfo) => {
   try {
+
     await Conversation.sync();
 
     const user = await User.findOne({ where: { id: user_id } });
