@@ -2,7 +2,7 @@ import { Sequelize, DataTypes } from "sequelize";
 import pg from "pg";
 
 const sequelize = new Sequelize(
-  "postgres://postgres:password@192.168.0.113:5432/chatgpt_replica_db",
+  `${process.env.DATABASE_URL}`,
   {
     dialectModule: pg,
   },
