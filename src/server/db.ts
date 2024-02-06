@@ -105,6 +105,7 @@ export interface UserAddInfo {
 }
 export const addUser = async ({ id,email, password }: UserAddInfo) => {
   try {
+    await testDbConnection()
     await User.sync();
     const newUser = await User.create({id, email, password });
     console.log("User added:", newUser);
@@ -166,7 +167,7 @@ export const addConversation = async ({
   date_created,
 }: ConversationAddInfo) => {
   try {
-
+    await testDbConnection()
     await Conversation.sync();
 
     const user = await User.findOne({ where: { id: user_id } });
