@@ -6,6 +6,9 @@ import { createUser } from "../server-actions";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from "../firebase";
 import { ClipLoader } from "react-spinners";
+import Image from "next/image";
+import showLogo from "../icons/show.png";
+import hideLogo from "../icons/hide.png";
 const SignUpPage = () => {
   const auth = firebaseAuth;
   const router = useRouter();
@@ -14,12 +17,80 @@ const SignUpPage = () => {
   const [warning, setWarning] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false);
+  const specialSymbols = [
+    "!",
+    "@",
+    "#",
+    "$",
+    "%",
+    "^",
+    "&",
+    "*",
+    "(",
+    ")",
+    "_",
+    "+",
+    "=",
+    "}",
+    "{",
+    "|",
+    "_",
+    '"',
+    "-",
+    ";",
+    ";",
+    "<",
+    ">",
+    "/",
+    "?",
+    ".",
+    ",",
+    "'",
+    "[",
+    "]",
+    "`",
+  ];
+
+  const checkPasswordValidity = () => {
+    if (password.length < 8) {
+      setWarning("Password too short. It must contain at least 8 characters.");
+      return false;
+    }
+    let specialSymbolCounter = 0;
+    let numberCounter = 0;
+    let capitalLetterCounter = 0;
+
+    for (const char of password) {
+      if (specialSymbols.includes(char)) {
+        specialSymbolCounter++;
+      } else if (!isNaN(parseInt(char))) {
+        numberCounter++;
+      } else if (char.toUpperCase() === char) {
+        capitalLetterCounter++;
+      }
+    }
+    if (
+      capitalLetterCounter < 1 ||
+      numberCounter < 1 ||
+      specialSymbolCounter < 1
+    ) {
+      setWarning(
+        "Invalid password. It must contain at least 1 capital letter, 1 special character, and 1 number.",
+      );
+      return false;
+    }
+    return true;
+  };
+
   const handleSignup = async () => {
     try {
       if (email === "" || password === "" || confirmPassword === "") {
         setWarning("Fill all fields");
         return;
       }
+      if (!checkPasswordValidity()) return;
       if (confirmPassword !== password) {
         setWarning("Password and confirm password should be identical");
         return;
@@ -53,31 +124,73 @@ const SignUpPage = () => {
             placeholder="Enter your email"
           />
         </div>
-
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-bold text-gray-700">
-            Password
-          </label>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border px-3 py-2 focus:border-blue-500"
-            type="password"
-            placeholder="Enter your password"
-          />
+        <div className="gap flex">
+          <div className="mb-4">
+            <label className="mb-2 block text-sm font-bold text-gray-700">
+              Password
+            </label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border px-3 py-2 focus:border-blue-500"
+              type={isPasswordShown ? "text" : "password"}
+              placeholder="Enter your password"
+            />
+          </div>
+          {isPasswordShown && (
+            <Image
+              src={showLogo.src}
+              onClick={() => setIsPasswordShown(!isPasswordShown)}
+              width="20"
+              height="25"
+              alt="Show password"
+              className="mt-8 max-h-7 max-w-7 hover:scale-110"
+            ></Image>
+          )}
+          {!isPasswordShown && (
+            <Image
+              src={hideLogo.src}
+              onClick={() => setIsPasswordShown(!isPasswordShown)}
+              width="20"
+              height="25"
+              alt="Hide password"
+              className="mt-8 max-h-7 max-w-7 hover:scale-110"
+            ></Image>
+          )}
         </div>
-
-        <div className="mb-6">
-          <label className="mb-2 block text-sm font-bold text-gray-700">
-            Confirm Password
-          </label>
-          <input
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full border px-3 py-2 focus:border-blue-500"
-            type="password"
-            placeholder="Confirm your password"
-          />
+        <div className="flex gap-1">
+          <div className="mb-6">
+            <label className="mb-2 block text-sm font-bold text-gray-700">
+              Confirm Password
+            </label>
+            <input
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full border px-3 py-2 focus:border-blue-500"
+              type={isConfirmPasswordShown ? "text" : "password"}
+              placeholder="Confirm your password"
+            />
+          </div>
+          {isConfirmPasswordShown && (
+            <Image
+              src={showLogo.src}
+              onClick={() => setIsConfirmPasswordShown(!isConfirmPasswordShown)}
+              width="20"
+              height="25"
+              alt="Show confirm password"
+              className="mt-8 max-h-7 max-w-7 hover:scale-110"
+            ></Image>
+          )}
+          {!isConfirmPasswordShown && (
+            <Image
+              src={hideLogo.src}
+              onClick={() => setIsConfirmPasswordShown(!isConfirmPasswordShown)}
+              width="20"
+              height="25"
+              alt="Hide confirm password"
+              className="mt-8 max-h-7 max-w-7 hover:scale-110"
+            ></Image>
+          )}
         </div>
         <div className="font-bold text-red-600">{warning}</div>
         <div className="flex justify-between">
