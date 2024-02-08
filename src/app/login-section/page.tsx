@@ -1,12 +1,15 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
-import { getSpecifiedUser } from "../server-actions";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "../context";
 import { firebaseAuth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ClipLoader } from "react-spinners";
+import Image from "next/image";
+import showLogo from "../icons/show.png";
+import hideLogo from "../icons/hide.png";
+
 const LoginPage = () => {
   const auth = firebaseAuth;
   const router = useRouter();
@@ -15,7 +18,7 @@ const LoginPage = () => {
   const [warning, setWarning] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const userContext = useUserContext();
-
+  const [isPasswordShown, setIsPasswordShown] = useState(false);
   const handleLogin = async () => {
     try {
       userContext.setMessageArr([]);
@@ -24,9 +27,8 @@ const LoginPage = () => {
         return;
       }
       setIsLoading(true);
-  
+
       await signInWithEmailAndPassword(auth, email, password);
-    
 
       setWarning("");
       setEmail("");
@@ -57,17 +59,39 @@ const LoginPage = () => {
               placeholder="Enter your email"
             />
           </div>
-          <div>
-            <label className="mb-2 text-sm font-bold text-gray-700">
-              Password
-            </label>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded border border-gray-300 p-2  focus:border-blue-500"
-              type="password"
-              placeholder="Enter your password"
-            />
+          <div className="flex gap-1">
+            <div>
+              <label className="mb-2 text-sm font-bold text-gray-700">
+                Password
+              </label>
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded border border-gray-300 p-2  focus:border-blue-500"
+                type={isPasswordShown ? "text" : "password"}
+                placeholder="Enter your password"
+              />
+            </div>
+            {isPasswordShown && (
+              <Image
+                src={showLogo.src}
+                onClick={() => setIsPasswordShown(!isPasswordShown)}
+                width="20"
+                height="25"
+                alt="Show password"
+                className="mt-8 max-h-7 max-w-7 hover:scale-110"
+              ></Image>
+            )}
+            {!isPasswordShown && (
+              <Image
+                src={hideLogo.src}
+                onClick={() => setIsPasswordShown(!isPasswordShown)}
+                width="20"
+                height="25"
+                alt="Hide password"
+                className="mt-8 max-h-7 max-w-7 hover:scale-110"
+              ></Image>
+            )}
           </div>
           <div className="font-bold text-red-600">{warning}</div>
           <button
