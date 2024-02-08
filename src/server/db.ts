@@ -1,19 +1,12 @@
 import { Sequelize, DataTypes } from "sequelize";
 import pg from "pg";
 
-// const sequelize = new Sequelize(
-//   `${process.env.DATABASE_URL}`,
-//   {
-//     dialectModule: pg,
-//   },
-// );
-
 const sequelize = new Sequelize(
-  'chatgpt_replica_db_render',
-  'chatgpt_replica_db_render_user',
-  'qSu9RWYsNmOYL9fRwVDZT9VaI5H5l2Qw',
+  `${process.env.DB_NAME}`,
+  `${process.env.DB_USERNAME}`,
+  `${process.env.DB_PASSWORD}`,
   {
-    host: 'dpg-cn18ko6d3nmc738le170-a.frankfurt-postgres.render.com',
+    host: `${process.env.DB_HOST}`,
     dialect: 'postgres',
     dialectModule: pg,
 dialectOptions:{
