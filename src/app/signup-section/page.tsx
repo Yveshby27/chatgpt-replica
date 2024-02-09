@@ -111,7 +111,7 @@ const SignUpPage = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 shadow-md">
         <h1 className="mb-6 text-3xl font-bold">SIGN UP</h1>
-
+<div className="flex">
         <div className="mb-4">
           <label className="mb-2 block text-sm font-bold text-gray-700">
             Email
@@ -119,12 +119,13 @@ const SignUpPage = () => {
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border px-3 py-2 focus:border-blue-500"
+            className="w-full border p-2 pr-36  focus:border-blue-500"
             type="email"
             placeholder="Enter your email"
           />
         </div>
-        <div className="gap flex">
+        </div>
+        <div className="flex">
           <div className="mb-4">
             <label className="mb-2 block text-sm font-bold text-gray-700">
               Password
@@ -132,33 +133,23 @@ const SignUpPage = () => {
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border px-3 py-2 focus:border-blue-500"
+              className="w-full rounded border border-gray-300 p-2 pr-36 focus:border-blue-500"
               type={isPasswordShown ? "text" : "password"}
               placeholder="Enter your password"
             />
           </div>
-          {isPasswordShown && (
+    
             <Image
-              src={showLogo.src}
+              src={isPasswordShown ? showLogo.src: hideLogo.src}
               onClick={() => setIsPasswordShown(!isPasswordShown)}
               width="20"
               height="25"
               alt="Show password"
-              className="mt-8 max-h-7 max-w-7 hover:scale-110"
+              className="mt-9 max-h-8 max-w-8 hover:scale-110 absolute ml-80"
             ></Image>
-          )}
-          {!isPasswordShown && (
-            <Image
-              src={hideLogo.src}
-              onClick={() => setIsPasswordShown(!isPasswordShown)}
-              width="20"
-              height="25"
-              alt="Hide password"
-              className="mt-8 max-h-7 max-w-7 hover:scale-110"
-            ></Image>
-          )}
+         
         </div>
-        <div className="flex gap-1">
+        <div className="flex">
           <div className="mb-6">
             <label className="mb-2 block text-sm font-bold text-gray-700">
               Confirm Password
@@ -166,31 +157,20 @@ const SignUpPage = () => {
             <input
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full border px-3 py-2 focus:border-blue-500"
+              className="w-full rounded border border-gray-300 p-2 pr-36  focus:border-blue-500"
               type={isConfirmPasswordShown ? "text" : "password"}
               placeholder="Confirm your password"
             />
           </div>
-          {isConfirmPasswordShown && (
             <Image
-              src={showLogo.src}
+              src={isConfirmPasswordShown ? showLogo.src:hideLogo.src}
               onClick={() => setIsConfirmPasswordShown(!isConfirmPasswordShown)}
               width="20"
               height="25"
               alt="Show confirm password"
-              className="mt-8 max-h-7 max-w-7 hover:scale-110"
+             className="mt-9 max-h-8 max-w-8 hover:scale-110 absolute ml-80"
             ></Image>
-          )}
-          {!isConfirmPasswordShown && (
-            <Image
-              src={hideLogo.src}
-              onClick={() => setIsConfirmPasswordShown(!isConfirmPasswordShown)}
-              width="20"
-              height="25"
-              alt="Hide confirm password"
-              className="mt-8 max-h-7 max-w-7 hover:scale-110"
-            ></Image>
-          )}
+    
         </div>
         <div className="font-bold text-red-600">{warning}</div>
         <div className="flex justify-between">
