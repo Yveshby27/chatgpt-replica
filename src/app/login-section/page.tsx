@@ -59,7 +59,7 @@ const LoginPage = () => {
               placeholder="Enter your email"
             />
           </div>
-          <div className="flex gap-1">
+          <div className="flex">
             <div>
               <label className="mb-2 text-sm font-bold text-gray-700">
                 Password
@@ -67,31 +67,21 @@ const LoginPage = () => {
               <input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded border border-gray-300 p-2  focus:border-blue-500"
+                className="w-full rounded border border-gray-300 p-2 pr-14  focus:border-blue-500"
                 type={isPasswordShown ? "text" : "password"}
                 placeholder="Enter your password"
               />
             </div>
-            {isPasswordShown && (
+
               <Image
-                src={showLogo.src}
+                src={isPasswordShown ? showLogo.src : hideLogo.src}
                 onClick={() => setIsPasswordShown(!isPasswordShown)}
                 width="20"
-                height="25"
+                height="24"
                 alt="Show password"
-                className="mt-8 max-h-7 max-w-7 hover:scale-110"
+                className="mt-9 max-h-8 max-w-8 hover:scale-110 absolute ml-72"
               ></Image>
-            )}
-            {!isPasswordShown && (
-              <Image
-                src={hideLogo.src}
-                onClick={() => setIsPasswordShown(!isPasswordShown)}
-                width="20"
-                height="25"
-                alt="Hide password"
-                className="mt-8 max-h-7 max-w-7 hover:scale-110"
-              ></Image>
-            )}
+         
           </div>
           <div className="font-bold text-red-600">{warning}</div>
           <button
