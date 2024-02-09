@@ -8,14 +8,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import trashLogo from "../icons/trash.png";
-import {
-  db,
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "../firebase";
+import { db, collection, getDocs, deleteDoc, doc } from "../firebase";
 import { ClipLoader } from "react-spinners";
+
 export interface FirebaseConversationGetInfo {
   doc_id: string;
   user_id: string;
@@ -30,7 +25,8 @@ const ChatHistorySection = () => {
     useState<FirebaseConversationGetInfo[]>();
   const [deleteCounter, setDeleteCounter] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-const [isDeleteLoading,setIsDeleteLoading]=useState(false)
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isConversationsEmpty, setIsConversationsEmpty] = useState(false);
   useEffect(() => {
     const getConversations = async () => {
       const query = await getDocs(collection(db, "chat-history"));
@@ -39,11 +35,13 @@ const [isDeleteLoading,setIsDeleteLoading]=useState(false)
         const { user_id, conversation_id, date_created } = doc.data();
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        firebaseChatHistoryData.push({ doc_id: doc.id,user_id,conversation_id,date_created,
+        firebaseChatHistoryData.push({ doc_id: doc.id, user_id, conversation_id,date_created,
         });
       });
       setConversations(firebaseChatHistoryData);
       setIsLoading(false);
+      if (firebaseChatHistoryData.length <= 0) setIsConversationsEmpty(true);
+      else setIsConversationsEmpty(false);
     };
     void getConversations();
   }, [deleteCounter]);
@@ -59,7 +57,7 @@ const [isDeleteLoading,setIsDeleteLoading]=useState(false)
   const handleDeleteClick = async (
     conversation: FirebaseConversationGetInfo,
   ) => {
-    setIsDeleteLoading(true)
+    setIsDeleteLoading(true);
     await handleDeleteConversation(conversation.conversation_id);
     setDeleteCounter(deleteCounter + 1);
     if (userContext.currentConversationId === conversation.conversation_id) {
@@ -67,17 +65,19 @@ const [isDeleteLoading,setIsDeleteLoading]=useState(false)
       userContext.setCurrentConversation(-1);
     }
     const docRef = doc(db, "chat-history", conversation.doc_id);
-    console.log("doc reference:", docRef);
+
     await deleteDoc(docRef);
-    setIsDeleteLoading(false)
+    setIsDeleteLoading(false);
   };
 
   return (
-    <div className="bg-gray-200 p-4">
+    <div className="min-h-screen bg-gray-200 p-4">
       <h2 className="mb-4 text-2xl font-bold">CHAT HISTORY</h2>
+      {isConversationsEmpty && (
+        <div className="flex justify-center text-2xl">No chats</div>
+      )}
       <div className="space-y-4">
         <div className="flex justify-center">
-          {" "}
           {isLoading && <ClipLoader color="black" size={50}></ClipLoader>}
         </div>
         {conversations?.map((conversation, index) => (
@@ -90,16 +90,23 @@ const [isDeleteLoading,setIsDeleteLoading]=useState(false)
               >
                 <p className="mb-2 text-lg font-semibold">Chat #{index + 1}</p>
               </div>
-              {!isDeleteLoading &&
-              <Image
-                onClick={() => handleDeleteClick(conversation)}
-                src={trashLogo.src}
-                width="20"
-                height="25"
-                alt="Trash(Delete)"
-                className="hover:scale-110"
-              ></Image>}
-              {isDeleteLoading && <ClipLoader color="black" className="mt-3" size={25}></ClipLoader>}
+              {!isDeleteLoading && (
+                <Image
+                  onClick={() => handleDeleteClick(conversation)}
+                  src={trashLogo.src}
+                  width="23"
+                  height="25"
+                  alt="Trash(Delete)"
+                  className="mt-2 max-h-8 hover:scale-110"
+                ></Image>
+              )}
+              {isDeleteLoading && (
+                <ClipLoader
+                  color="black"
+                  className="mt-3"
+                  size={25}
+                ></ClipLoader>
+              )}
             </div>
           </div>
         ))}
