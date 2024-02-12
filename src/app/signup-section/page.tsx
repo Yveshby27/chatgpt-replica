@@ -119,7 +119,7 @@ const SignUpPage = () => {
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border p-2 pr-36  focus:border-blue-500"
+            className="w-full rounded border p-2 pr-36  focus:border-blue-500"
             type="email"
             placeholder="Enter your email"
           />
