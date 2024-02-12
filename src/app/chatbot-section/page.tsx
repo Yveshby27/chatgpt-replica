@@ -159,19 +159,18 @@ const ChatbotSection = () => {
           <div className="h-full w-1/2">
             <MessageDisplay messages={messages} />
             <div className="flex gap-5">
-              <input
-                type="text"
-                value={userMessage}
-                onChange={(e) => setUserMessage(e.target.value)}
-                className="mt-4 w-full border px-3 py-2"
-                placeholder="Message"
-                onKeyDown={async (e) => {
-                  if (e.key === "Enter") {
-                    if (!isLoading) await handleSendMessage();
-                  }
-                }}
-              ></input>
-
+            <textarea
+      value={userMessage}
+      onChange={(e) => setUserMessage(e.target.value)}
+      className="w-full px-4 py-3 mt-5 text-sm border border-gray-300 rounded-lg outline-none focus:border-blue-500"
+      placeholder="Message"
+      style={{ minHeight: '50px', maxHeight: '200px',height:'50px' }} 
+      onKeyDown={async (e) => {
+        if (e.key === "Enter") {
+          if (!isLoading) await handleSendMessage();
+        }
+      }}
+    />
               <button
                 onClick={async () => {
                   if (!isLoading) await handleSendMessage();
