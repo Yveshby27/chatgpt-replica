@@ -59,7 +59,7 @@ const Message = sequelize.define(
       primaryKey: true,
     },
     content: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     is_user_message: {
       type: DataTypes.BOOLEAN,
