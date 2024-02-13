@@ -175,7 +175,7 @@ const ChatbotSection = () => {
                 onClick={async () => {
                   if (!isLoading) await handleSendMessage();
                 }}
-                className="mt-4 bg-blue-500 px-4  py-2 text-white hover:bg-blue-600 "
+                className="mt-4 max-h-14 bg-blue-500 px-4  py-2 text-white hover:bg-blue-600 "
               >
                 {!isLoading && <div>Send</div>}
                 {isLoading && (
@@ -190,7 +190,7 @@ const ChatbotSection = () => {
                     handleNewChat();
                   }
                 }}
-                className="mt-4 w-36 bg-green-500  px-4 py-2 text-white hover:bg-green-600 "
+                className="mt-4 w-36 max-h-14 bg-green-500  px-4 py-2 text-white hover:bg-green-600 "
               >
                 New Chat
               </button>
