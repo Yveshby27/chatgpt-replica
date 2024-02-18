@@ -26,21 +26,21 @@ const ChatHistorySection = () => {
     useState<FirebaseConversationGetInfo[]>();
   const [deleteCounter, setDeleteCounter] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const [isConversationsEmpty, setIsConversationsEmpty] = useState(false);
   const sortOptions=[
-    {value:'oldToNew',label:'Old to new'},
-    {value:'newToOld',label:'New to old'}
+    {value:'mostRecent',label:'Most recent'},
+    {value:'oldest',label:'Oldest'}
   ]
 
-  const [sortOption,setSortOption]=useState(`${sortOptions[0]?.value}`)
+  const [sortOption,setSortOption]=useState({value:'mostRecent',label:'Most recent'})
   useEffect(() => {
     const getConversations = async () => {
       const query = await getDocs(collection(db, "chat-history"));
       const firebaseChatHistoryData: FirebaseConversationGetInfo[] = [];
       query.forEach((doc) => {
         const { user_id, conversation_id, date_created } = doc.data();
-if(sortOption===sortOptions[0]?.value){
+if(sortOption.value===sortOptions[0]?.value){
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         firebaseChatHistoryData.push({ doc_id: doc.id, user_id, conversation_id,date_created});
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -65,7 +65,8 @@ if(sortOption===sortOptions[0]?.value){
   const handleDeleteClick = async (
     conversation: FirebaseConversationGetInfo,
   ) => {
-    setIsDeleteLoading(true);
+
+    setIsLoading(true)
     await handleDeleteConversation(conversation.conversation_id);
     setDeleteCounter(deleteCounter + 1);
     if (userContext.currentConversationId === conversation.conversation_id) {
@@ -75,7 +76,8 @@ if(sortOption===sortOptions[0]?.value){
     const docRef = doc(db, "chat-history", conversation.doc_id);
 
     await deleteDoc(docRef);
-    setIsDeleteLoading(false);
+
+    setIsLoading(false)
   };
 
   return (
@@ -86,9 +88,12 @@ if(sortOption===sortOptions[0]?.value){
       )}
       {
         !isConversationsEmpty && 
-        <div><Select options={sortOptions} onChange={(e)=>{if(e?.value!==undefined)setSortOption(e?.value)}} className="w-36 float-right"></Select></div>
+        <div className=" flex gap-1 float-right">
+        <label className="mt-1 text-lg">Sort by:</label>
+        <Select options={sortOptions} value={sortOption} onChange={(e)=>{if(e!==null)setSortOption(e)}} className="w-40"></Select>
+        </div>
       }
-      <div className="space-y-4 mt-6">
+      <div className="space-y-4 mt-12">
         <div className="flex justify-center">
           {isLoading && <ClipLoader color="black" size={50}></ClipLoader>}
         </div>
@@ -102,7 +107,6 @@ if(sortOption===sortOptions[0]?.value){
               >
                 <p className="mb-2 text-lg font-semibold">Chat #{index + 1}</p>
               </div>
-              {!isDeleteLoading && (
                 <Image
                   onClick={() => handleDeleteClick(conversation)}
                   src={trashLogo.src}
@@ -111,14 +115,6 @@ if(sortOption===sortOptions[0]?.value){
                   alt="Trash(Delete)"
                   className="mt-2 max-h-8 hover:scale-110"
                 ></Image>
-              )}
-              {isDeleteLoading && (
-                <ClipLoader
-                  color="black"
-                  className="mt-3"
-                  size={25}
-                ></ClipLoader>
-              )}
             </div>
           </div>
         ))}
@@ -127,7 +123,7 @@ if(sortOption===sortOptions[0]?.value){
 
       <Link href="/chatbot-section" className="w-32">
         <div className="focus:shadow-outline-blue mt-5 flex w-32 justify-center rounded bg-blue-500 p-2 text-center  text-white hover:bg-blue-600 focus:outline-none">
-          Back To Chat
+          Back to chat
         </div>
       </Link>
      
