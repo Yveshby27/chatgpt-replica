@@ -10,6 +10,7 @@ import Image from "next/image";
 import trashLogo from "../icons/trash.png";
 import { db, collection, getDocs, deleteDoc, doc } from "../firebase";
 import { ClipLoader } from "react-spinners";
+import Select from "react-select"
 
 export interface FirebaseConversationGetInfo {
   doc_id: string;
@@ -27,16 +28,23 @@ const ChatHistorySection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isConversationsEmpty, setIsConversationsEmpty] = useState(false);
+  const sortOptions=[
+    {value:'oldToNew',label:'Old to new'},
+    {value:'newToOld',label:'New to old'}
+  ]
+
+  const [sortOption,setSortOption]=useState(`${sortOptions[0]?.value}`)
   useEffect(() => {
     const getConversations = async () => {
       const query = await getDocs(collection(db, "chat-history"));
       const firebaseChatHistoryData: FirebaseConversationGetInfo[] = [];
       query.forEach((doc) => {
         const { user_id, conversation_id, date_created } = doc.data();
-
+if(sortOption===sortOptions[0]?.value){
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        firebaseChatHistoryData.push({ doc_id: doc.id, user_id, conversation_id,date_created,
-        });
+        firebaseChatHistoryData.push({ doc_id: doc.id, user_id, conversation_id,date_created});
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+}else   firebaseChatHistoryData.unshift({ doc_id: doc.id, user_id, conversation_id,date_created});
       });
       setConversations(firebaseChatHistoryData);
       setIsLoading(false);
@@ -44,7 +52,7 @@ const ChatHistorySection = () => {
       else setIsConversationsEmpty(false);
     };
     void getConversations();
-  }, [deleteCounter]);
+  }, [deleteCounter,sortOption]);
   const handleChatClick = async (conversation: ConversationGetInfo) => {
     const clickedChatMessages = await handleGetMessages(
       conversation.conversation_id,
@@ -76,7 +84,11 @@ const ChatHistorySection = () => {
       {isConversationsEmpty && (
         <div className="flex justify-center text-2xl">No chats</div>
       )}
-      <div className="space-y-4">
+      {
+        !isConversationsEmpty && 
+        <div><Select options={sortOptions} onChange={(e)=>{if(e?.value!==undefined)setSortOption(e?.value)}} className="w-36 float-right"></Select></div>
+      }
+      <div className="space-y-4 mt-6">
         <div className="flex justify-center">
           {isLoading && <ClipLoader color="black" size={50}></ClipLoader>}
         </div>
@@ -111,12 +123,15 @@ const ChatHistorySection = () => {
           </div>
         ))}
       </div>
+      <div>
 
-      <Link href="/chatbot-section">
+      <Link href="/chatbot-section" className="w-32">
         <div className="focus:shadow-outline-blue mt-5 flex w-32 justify-center rounded bg-blue-500 p-2 text-center  text-white hover:bg-blue-600 focus:outline-none">
           Back To Chat
         </div>
       </Link>
+     
+      </div>
     </div>
   );
 };
