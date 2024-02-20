@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import trashLogo from "../icons/trash.png";
-import { db, collection, getDocs, deleteDoc, doc } from "../firebase";
+import { db, collection, getDocs, deleteDoc, doc, firebaseAuth } from "../firebase";
 import { ClipLoader } from "react-spinners";
 import Select from "react-select"
 
@@ -37,9 +37,11 @@ const ChatHistorySection = () => {
   useEffect(() => {
     const getConversations = async () => {
       const query = await getDocs(collection(db, "chat-history"));
+      
       const firebaseChatHistoryData: FirebaseConversationGetInfo[] = [];
       query.forEach((doc) => {
         const { user_id, conversation_id, date_created } = doc.data();
+        if(firebaseAuth.currentUser?.uid===user_id)
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         firebaseChatHistoryData.unshift({ doc_id: doc.id, user_id, conversation_id,date_created});
         if(sortOption.value===sortOptions[1]?.value){
