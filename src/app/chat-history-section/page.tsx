@@ -40,11 +40,13 @@ const ChatHistorySection = () => {
       const firebaseChatHistoryData: FirebaseConversationGetInfo[] = [];
       query.forEach((doc) => {
         const { user_id, conversation_id, date_created } = doc.data();
-if(sortOption.value===sortOptions[0]?.value){
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        firebaseChatHistoryData.push({ doc_id: doc.id, user_id, conversation_id,date_created});
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-}else   firebaseChatHistoryData.unshift({ doc_id: doc.id, user_id, conversation_id,date_created});
+        firebaseChatHistoryData.unshift({ doc_id: doc.id, user_id, conversation_id,date_created});
+        if(sortOption.value===sortOptions[1]?.value){
+firebaseChatHistoryData.reverse()
+        }
+
+
       });
       setConversations(firebaseChatHistoryData);
       setIsLoading(false);
